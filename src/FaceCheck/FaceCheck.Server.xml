@@ -1,0 +1,962 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>FaceCheck.Server</name>
+    </assembly>
+    <members>
+        <member name="T:FaceCheck.Server.Controllers.FaceController">
+            <summary>
+            </summary>
+        </member>
+        <member name="M:FaceCheck.Server.Controllers.FaceController.#ctor(Microsoft.Extensions.Logging.ILogger{FaceCheck.Server.Controllers.FaceController},FaceCheck.Server.Util.PhotoCheck)">
+            <summary>
+            </summary>
+        </member>
+        <member name="M:FaceCheck.Server.Controllers.FaceController.CheckPicx(FaceCheck.Server.Model.SetPicInfo)">
+            <summary>
+            </summary>
+        </member>
+        <member name="M:FaceCheck.Server.Controllers.FaceController.CheckPic(FaceCheck.Server.Model.SetPicInfo)">
+            <summary>
+            </summary>
+        </member>
+        <member name="M:FaceCheck.Server.Controllers.FaceController.CheckPicByFlile(Microsoft.AspNetCore.Http.IFormFile,Microsoft.AspNetCore.Http.IFormFile,System.Threading.CancellationToken)">
+            <summary>
+            </summary>
+        </member>
+        <member name="M:FaceCheck.Server.Controllers.FaceController.CheckPic2(FaceCheck.Server.Model.SetPicInfo)">
+            <summary>
+            </summary>
+        </member>
+        <member name="M:FaceCheck.Server.Controllers.FaceController.CheckPic2ByFile(Microsoft.AspNetCore.Http.IFormFile,Microsoft.AspNetCore.Http.IFormFile,System.Threading.CancellationToken)">
+            <summary>
+            </summary>
+        </member>
+        <member name="T:FaceCheck.Server.Helper.ConfigSectionAttribute">
+            <summary>
+            </summary>
+        </member>
+        <member name="P:FaceCheck.Server.Helper.ConfigSectionAttribute.Section">
+            <summary>
+            </summary>
+        </member>
+        <member name="T:FaceCheck.Server.Helper.Configs.CheckPicConfig">
+            <summary>
+            </summary>
+        </member>
+        <member name="F:FaceCheck.Server.Helper.Configs.CheckPicConfig.Section">
+            <summary>
+            </summary>
+        </member>
+        <member name="P:FaceCheck.Server.Helper.Configs.CheckPicConfig.EngineNum">
+            <summary>
+            引擎个数
+            </summary>
+        </member>
+        <member name="P:FaceCheck.Server.Helper.Configs.CheckPicConfig.NeedAge">
+            <summary>
+            </summary>
+        </member>
+        <member name="P:FaceCheck.Server.Helper.Configs.CheckPicConfig.NeedGender">
+            <summary>
+            </summary>
+        </member>
+        <member name="P:FaceCheck.Server.Helper.Configs.CheckPicConfig.OpenEye">
+            <summary>
+            </summary>
+        </member>
+        <member name="P:FaceCheck.Server.Helper.Configs.CheckPicConfig.Similarity">
+            <summary>
+            相似度 (0.0~1.0) 默认0.8
+            </summary>
+        </member>
+        <member name="P:FaceCheck.Server.Helper.Configs.CheckPicConfig.ImageQuality">
+            <summary>
+            照片质量 (0.0~1.0) (-1表示不检测)
+            </summary>
+        </member>
+        <member name="T:FaceCheck.Server.Helper.Configs.CutPhotoConfig">
+            <summary>
+            </summary>
+        </member>
+        <member name="F:FaceCheck.Server.Helper.Configs.CutPhotoConfig.Section">
+            <summary>
+            </summary>
+        </member>
+        <member name="P:FaceCheck.Server.Helper.Configs.CutPhotoConfig.Need">
+            <summary>
+            是否要截图
+            </summary>
+        </member>
+        <member name="P:FaceCheck.Server.Helper.Configs.CutPhotoConfig.MaxWidth">
+            <summary>
+            照片最大宽度 大于这个宽度会自动缩小
+            </summary>
+        </member>
+        <member name="P:FaceCheck.Server.Helper.Configs.CutPhotoConfig.MinWidth">
+            <summary>
+            照片最小宽度 小于这个宽度 大于最小可用宽度 宽度会自动缩放
+            </summary>
+        </member>
+        <member name="P:FaceCheck.Server.Helper.Configs.CutPhotoConfig.MinSize">
+            <summary>
+            最小可用宽度 (建议为最小瞳距的3~4倍) 小于这个宽度会返回错误信息 默认 50
+            <para />
+            照片最小可进行缩放长宽（小于这个尺寸就放弃照片）
+            </summary>
+        </member>
+        <member name="P:FaceCheck.Server.Helper.Configs.CutPhotoConfig.OutwardScale">
+            <summary>
+            外扩比例(分母) 整数
+            </summary>
+        </member>
+        <member name="P:FaceCheck.Server.Helper.Configs.CutPhotoConfig.MinOutwardPix">
+            <summary>
+            最小外扩像素
+            </summary>
+        </member>
+        <member name="P:FaceCheck.Server.Helper.Configs.CutPhotoConfig.ScaleHeight">
+            <summary>
+            裁剪照片 高度比
+            </summary>
+        </member>
+        <member name="P:FaceCheck.Server.Helper.Configs.CutPhotoConfig.ScaleWidth">
+            <summary>
+            裁剪照片 宽度比
+            </summary>
+        </member>
+        <member name="P:FaceCheck.Server.Helper.Configs.CutPhotoConfig.NewBg">
+            <summary>
+            </summary>
+        </member>
+        <member name="T:FaceCheck.Server.Helper.Configs.CutPhotoConfig.BackgroundColor">
+            <summary>
+            </summary>
+        </member>
+        <member name="P:FaceCheck.Server.Helper.Configs.CutPhotoConfig.BackgroundColor.Need">
+            <summary>
+            是否需要将图片填充至1:1
+            </summary>
+        </member>
+        <member name="P:FaceCheck.Server.Helper.Configs.CutPhotoConfig.BackgroundColor.R">
+            <summary>
+            </summary>
+        </member>
+        <member name="P:FaceCheck.Server.Helper.Configs.CutPhotoConfig.BackgroundColor.G">
+            <summary>
+            </summary>
+        </member>
+        <member name="P:FaceCheck.Server.Helper.Configs.CutPhotoConfig.BackgroundColor.B">
+            <summary>
+            </summary>
+        </member>
+        <member name="P:FaceCheck.Server.Helper.Configs.CutPhotoConfig.BackgroundColor.A">
+            <summary>
+            </summary>
+        </member>
+        <member name="T:FaceCheck.Server.Helper.IConfig">
+            <summary>
+            </summary>
+        </member>
+        <member name="T:FaceCheck.Server.Helper.Extension">
+            <summary>
+            </summary>
+        </member>
+        <member name="M:FaceCheck.Server.Helper.Extension.IsFacePhoto(System.Byte[])">
+            <summary>
+            判断是否为人脸图片 (png jpg bmp)
+            </summary>
+            <param name="imageBuffer"> </param>
+            <returns> </returns>
+        </member>
+        <member name="M:FaceCheck.Server.Helper.Extension.GetPicExtention(System.Byte[])">
+            <summary>
+            获取图片文件类型 只支持 png gif bmp tiff icon jpg
+            </summary>
+            <param name="imageBuffer"> </param>
+            <returns> </returns>
+        </member>
+        <member name="M:FaceCheck.Server.Helper.Extension.LoadConfig``1(Microsoft.Extensions.Configuration.IConfiguration)">
+            <summary>
+            </summary>
+        </member>
+        <member name="M:FaceCheck.Server.Helper.Extension.LoadConfig``1(Microsoft.Extensions.Configuration.IConfiguration,System.String)">
+            <summary>
+            </summary>
+        </member>
+        <member name="M:FaceCheck.Server.Helper.Extension.LoadConfigs``2(Microsoft.Extensions.Configuration.IConfiguration)">
+            <summary>
+            </summary>
+        </member>
+        <member name="M:FaceCheck.Server.Helper.Extension.ConfigureServices(Microsoft.Extensions.DependencyInjection.IServiceCollection,FaceCheck.Server.Configs.SystemConfig)">
+            <summary>
+            </summary>
+            <returns> </returns>
+        </member>
+        <member name="M:FaceCheck.Server.Helper.Extension.AppInit(Microsoft.AspNetCore.Builder.WebApplication,FaceCheck.Server.Configs.SystemConfig,Microsoft.Extensions.Configuration.IConfiguration)">
+            <summary>
+            错误参数信息拦截
+            </summary>
+            <returns> </returns>
+        </member>
+        <member name="M:FaceCheck.Server.Helper.Extension.SetPostConfigure(Microsoft.Extensions.DependencyInjection.IServiceCollection)">
+            <summary>
+            错误参数信息拦截
+            </summary>
+        </member>
+        <member name="M:FaceCheck.Server.Helper.Extension.AddJsonOptions(Microsoft.Extensions.DependencyInjection.IServiceCollection,System.Boolean)">
+            <summary>
+            </summary>
+        </member>
+        <member name="M:FaceCheck.Server.Helper.Extension.UseDateTimeStringConverters(Swashbuckle.AspNetCore.SwaggerGen.SwaggerGenOptions)">
+            <summary>
+            </summary>
+            <param name="options"> </param>
+        </member>
+        <member name="P:FaceCheck.Server.Helper.PicHeader.TgaHeader1">
+            <summary>
+            </summary>
+        </member>
+        <member name="P:FaceCheck.Server.Helper.PicHeader.TgaHeader2">
+            <summary>
+            </summary>
+        </member>
+        <member name="P:FaceCheck.Server.Helper.PicHeader.CurHeader">
+            <summary>
+            </summary>
+        </member>
+        <member name="P:FaceCheck.Server.Helper.PicHeader.PngHeader">
+            <summary>
+            </summary>
+        </member>
+        <member name="P:FaceCheck.Server.Helper.PicHeader.GifHeader1">
+            <summary>
+            </summary>
+        </member>
+        <member name="P:FaceCheck.Server.Helper.PicHeader.GifHeader2">
+            <summary>
+            </summary>
+        </member>
+        <member name="P:FaceCheck.Server.Helper.PicHeader.BmpHeader">
+            <summary>
+            </summary>
+        </member>
+        <member name="P:FaceCheck.Server.Helper.PicHeader.TiffHeader1">
+            <summary>
+            </summary>
+        </member>
+        <member name="P:FaceCheck.Server.Helper.PicHeader.TiffHeader2">
+            <summary>
+            </summary>
+        </member>
+        <member name="P:FaceCheck.Server.Helper.PicHeader.IconHeader">
+            <summary>
+            </summary>
+        </member>
+        <member name="P:FaceCheck.Server.Helper.PicHeader.JpgHeader">
+            <summary>
+            </summary>
+        </member>
+        <member name="T:FaceCheck.Server.Helper.UpperCaseNameingPolicy">
+            <summary>
+            最大化命名
+            </summary>
+        </member>
+        <member name="M:FaceCheck.Server.Helper.UpperCaseNameingPolicy.ConvertName(System.String)">
+            <summary>
+            </summary>
+        </member>
+        <member name="T:FaceCheck.Server.Helper.Util">
+            <summary>
+            </summary>
+        </member>
+        <member name="F:FaceCheck.Server.Helper.Util.WWWDir">
+            <summary>
+            </summary>
+        </member>
+        <member name="F:FaceCheck.Server.Helper.Util.TempRootDir">
+            <summary>
+            </summary>
+        </member>
+        <member name="M:FaceCheck.Server.Helper.Util.SavePic(System.Byte[],System.Boolean)">
+            <summary>
+            </summary>
+        </member>
+        <member name="M:FaceCheck.Server.Helper.Util.SaveTempPic(System.Byte[])">
+            <summary>
+            </summary>
+        </member>
+        <member name="M:FaceCheck.Server.Helper.Util.Path2Url(System.String)">
+            <summary>
+            文件夹路径转为url
+            </summary>
+        </member>
+        <member name="T:FaceCheck.Server.Helper.Win32">
+            <summary>
+            </summary>
+        </member>
+        <member name="T:FaceCheck.Server.Helper.Win32.ConsoleCtrlDelegate">
+            <summary>
+            命令行程序退出回调
+            </summary>
+            <param name="dwCtrlType"></param>
+            <returns></returns>
+        </member>
+        <member name="F:FaceCheck.Server.Helper.Win32.STD_INPUT_HANDLE">
+             <summary>
+            
+             </summary>
+        </member>
+        <member name="F:FaceCheck.Server.Helper.Win32.ENABLE_QUICK_EDIT_MODE">
+             <summary>
+            
+             </summary>
+        </member>
+        <member name="F:FaceCheck.Server.Helper.Win32.SW_HIDE">
+            <summary>
+            隐藏
+            </summary>
+        </member>
+        <member name="M:FaceCheck.Server.Helper.Win32.SetConsoleCtrlHandler(FaceCheck.Server.Helper.Win32.ConsoleCtrlDelegate,System.Boolean)">
+             <summary>
+             命令行程序退出回调
+             </summary>
+             <![CDATA[
+             Win32Helper.ConsoleCtrlDelegate newDelegate = new Win32Helper.ConsoleCtrlDelegate(HandlerRoutine);
+             if (!Win32Helper.SetConsoleCtrlHandler(newDelegate, true))
+             {
+                 Console.WriteLine("抱歉，API注入失败，按任意键退出！");
+                 return;
+             }
+            
+             private static bool HandlerRoutine(int CtrlType)
+             {
+                 // 退出回调
+                 Console.WriteLine($"HandlerRoutine: {CtrlType}");
+                 return true;
+             }
+             ]]>
+             <param name="HandlerRoutine"></param>
+             <param name="Add"></param>
+             <returns></returns>
+        </member>
+        <member name="M:FaceCheck.Server.Helper.Win32.GetConsoleWindow">
+            <summary>
+            获取命令行窗口句柄
+            </summary>
+            <![CDATA[
+            IntPtr intptr = Win32Helper.GetConsoleWindow();
+            if (intptr != IntPtr.Zero)
+            {
+                Win32Helper.ShowWindow(intptr, Win32Helper.SW_HIDE);
+            }
+            ]]>
+            <returns></returns>
+        </member>
+        <member name="M:FaceCheck.Server.Helper.Win32.ShowWindow(System.IntPtr,System.UInt32)">
+            <summary>
+            用于隐藏窗口
+            </summary>
+            <![CDATA[
+            IntPtr intptr = Win32Helper.GetConsoleWindow();
+            if (intptr != IntPtr.Zero)
+            {
+                Win32Helper.ShowWindow(intptr, Win32Helper.SW_HIDE);
+            }
+            ]]>
+            <param name="hWnd"></param>
+            <param name="nCmdShow"></param>
+            <returns></returns>
+        </member>
+        <member name="M:FaceCheck.Server.Helper.Win32.DisbleQuickEditMode">
+            <summary>
+            命令行程序禁用光标
+            </summary>
+            <![CDATA[
+            Win32Helper.DisbleQuickEditMode();
+            ]]>
+        </member>
+        <member name="T:FaceCheck.Server.Configs.SystemConfig">
+            <summary>
+            </summary>
+        </member>
+        <member name="F:FaceCheck.Server.Configs.SystemConfig.Section">
+            <summary>
+            </summary>
+        </member>
+        <member name="P:FaceCheck.Server.Configs.SystemConfig.IsReal">
+            <summary>
+            是否对照片进行校验
+            </summary>
+        </member>
+        <member name="P:FaceCheck.Server.Configs.SystemConfig.UseSwagger">
+            <summary>
+            </summary>
+        </member>
+        <member name="P:FaceCheck.Server.Configs.SystemConfig.IsBase64Log">
+            <summary>
+            </summary>
+        </member>
+        <member name="P:FaceCheck.Server.Configs.SystemConfig.IsSaveImg">
+            <summary>
+            测试时使用 是否缓存照片文件
+            </summary>
+        </member>
+        <member name="P:FaceCheck.Server.Configs.SystemConfig.PrettyPrintingJson">
+            <summary>
+            json 是否漂亮打印
+            </summary>
+        </member>
+        <member name="P:FaceCheck.Server.Configs.SystemConfig.Hide">
+            <summary>
+            隐藏命令行窗口(只在Windows有效)
+            </summary>
+        </member>
+        <member name="P:FaceCheck.Server.Configs.SystemConfig.MicrosoftOnnxTelemetry">
+            <summary>
+            是否启用微软的算法遥测(会被微软收集数据用于优化项目)
+            </summary>
+        </member>
+        <member name="P:FaceCheck.Server.Configs.SystemConfig.Title">
+            <summary>
+            自定义Title
+            </summary>
+        </member>
+        <member name="P:FaceCheck.Server.Configs.SystemConfig.UseDirectoryBrowser">
+            <summary>
+            启用目录浏览
+            </summary>
+        </member>
+        <member name="T:FaceCheck.Server.Model.Face3DAngle">
+            <summary>
+            3D人脸角度检测
+            </summary>
+        </member>
+        <member name="P:FaceCheck.Server.Model.Face3DAngle.Status">
+            <summary>
+            是否检测成功，0成功，其他为失败
+            </summary>
+        </member>
+        <member name="P:FaceCheck.Server.Model.Face3DAngle.Roll">
+            <summary>
+            </summary>
+        </member>
+        <member name="P:FaceCheck.Server.Model.Face3DAngle.Yaw">
+            <summary>
+            </summary>
+        </member>
+        <member name="P:FaceCheck.Server.Model.Face3DAngle.Pitch">
+            <summary>
+            </summary>
+        </member>
+        <member name="T:FaceCheck.Server.Model.FaceInfo">
+            <summary>
+            人脸信息
+            </summary>
+        </member>
+        <member name="P:FaceCheck.Server.Model.FaceInfo.FaceOrient">
+            <summary>
+            头像角度
+            <para> 60,90,120 旋转90° </para>
+            150,180,210 旋转180°
+            <para> 240,270,300 旋转-90° </para>
+            </summary>
+        </member>
+        <member name="P:FaceCheck.Server.Model.FaceInfo.Sex">
+            <summary>
+            0：男；1：女；
+            </summary>
+        </member>
+        <member name="P:FaceCheck.Server.Model.FaceInfo.Age">
+            <summary>
+            </summary>
+        </member>
+        <member name="P:FaceCheck.Server.Model.FaceInfo.Face3DAngle">
+            <summary>
+             无效!! 只是兼容见版本才保留的参数
+            </summary>
+        </member>
+        <member name="P:FaceCheck.Server.Model.FaceInfo.RgbLive">
+            <summary>
+             无效!! 只是兼容见版本才保留的参数 RGB 活体 0：非真人；1：真人；-1：不确定；-2:传入人脸数&gt;1；-3: 人脸过小 -4: 角度过大 -5: 人脸超出边界 -6: 深度图错误 -7: 红外图太亮了
+            </summary>
+        </member>
+        <member name="P:FaceCheck.Server.Model.FaceInfo.Mask">
+            <summary>
+             无效!! 只是兼容见版本才保留的参数 口罩 "0" 代表没有带口罩，"1"代表带口罩 ,"-1"表不确定
+            </summary>
+        </member>
+        <member name="P:FaceCheck.Server.Model.FaceInfo.WearGlasses">
+            <summary>
+            无效!! 只是兼容见版本才保留的参数 戴眼镜置信度[0-1],推荐阈值0.5
+            </summary>
+        </member>
+        <member name="P:FaceCheck.Server.Model.FaceInfo.IsLeftEyeClosed">
+            <summary>
+            左眼状态
+            </summary>
+        </member>
+        <member name="P:FaceCheck.Server.Model.FaceInfo.IsRightEyeClosed">
+            <summary>
+            右眼状态
+            </summary>
+        </member>
+        <member name="P:FaceCheck.Server.Model.FaceInfo.FaceShelter">
+            <summary>
+            无效!! 只是兼容见版本才保留的参数 "1" 表示 遮挡, "0" 表示 未遮挡, "-1" 表示不确定
+            </summary>
+        </member>
+        <member name="P:FaceCheck.Server.Model.FaceInfo.FaceLandPoint">
+            <summary>
+            无效!! 只是兼容见版本才保留的参数额头坐标 Empty 表示无效
+            </summary>
+        </member>
+        <member name="P:FaceCheck.Server.Model.FaceInfo.Feature">
+            <summary>
+            特征
+            </summary>
+        </member>
+        <member name="P:FaceCheck.Server.Model.FaceInfo.ImageQuality">
+            <summary>
+            图像质量 -1无效
+            </summary>
+        </member>
+        <member name="P:FaceCheck.Server.Model.FaceInfo.Rectangle">
+            <summary>
+            </summary>
+        </member>
+        <member name="T:FaceCheck.Server.Model.HeadLocationInfoBase">
+            <summary>
+            </summary>
+        </member>
+        <member name="P:FaceCheck.Server.Model.HeadLocationInfoBase.X">
+            <summary>
+            </summary>
+        </member>
+        <member name="P:FaceCheck.Server.Model.HeadLocationInfoBase.Y">
+            <summary>
+            </summary>
+        </member>
+        <member name="P:FaceCheck.Server.Model.HeadLocationInfoBase.Width">
+            <summary>
+            </summary>
+        </member>
+        <member name="P:FaceCheck.Server.Model.HeadLocationInfoBase.Height">
+            <summary>
+            </summary>
+        </member>
+        <member name="P:FaceCheck.Server.Model.HeadLocationInfoBase.ImageQuality">
+            <summary>
+            图像质量 -1无效
+            </summary>
+        </member>
+        <member name="P:FaceCheck.Server.Model.HeadLocationInfoBase.SnapBuffer">
+            <summary>
+            </summary>
+        </member>
+        <member name="P:FaceCheck.Server.Model.HeadLocationInfoBase.FaceInfo">
+            <summary>
+            </summary>
+        </member>
+        <member name="T:FaceCheck.Server.Model.HttpResult">
+            <summary>
+            </summary>
+        </member>
+        <member name="P:FaceCheck.Server.Model.HttpResult.Success">
+            <summary>
+            </summary>
+        </member>
+        <member name="P:FaceCheck.Server.Model.HttpResult.Message">
+            <summary>
+            </summary>
+        </member>
+        <member name="P:FaceCheck.Server.Model.HttpResult.Code">
+            <summary>
+            </summary>
+        </member>
+        <member name="T:FaceCheck.Server.Model.HttpResult`1">
+            <summary>
+            </summary>
+        </member>
+        <member name="P:FaceCheck.Server.Model.HttpResult`1.Data">
+            <summary>
+            </summary>
+        </member>
+        <member name="T:FaceCheck.Server.Model.PointF">
+            <summary>
+            </summary>
+        </member>
+        <member name="M:FaceCheck.Server.Model.PointF.#ctor(System.Single,System.Single)">
+            <summary>
+            </summary>
+        </member>
+        <member name="F:FaceCheck.Server.Model.PointF.Empty">
+            <summary>
+            </summary>
+        </member>
+        <member name="P:FaceCheck.Server.Model.PointF.X">
+            <summary>
+            </summary>
+        </member>
+        <member name="P:FaceCheck.Server.Model.PointF.Y">
+            <summary>
+            </summary>
+        </member>
+        <member name="P:FaceCheck.Server.Model.PointF.IsEmpty">
+            <summary>
+            </summary>
+        </member>
+        <member name="M:FaceCheck.Server.Model.PointF.Equals(FaceCheck.Server.Model.PointF)">
+            <summary>
+            </summary>
+            <param name="other"></param>
+            <returns></returns>
+        </member>
+        <member name="M:FaceCheck.Server.Model.PointF.Equals(System.Object)">
+            <summary>
+            </summary>
+            <param name="obj"></param>
+            <returns></returns>
+        </member>
+        <member name="M:FaceCheck.Server.Model.PointF.GetHashCode">
+            <summary>
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:FaceCheck.Server.Model.PointF.op_Equality(FaceCheck.Server.Model.PointF,FaceCheck.Server.Model.PointF)">
+            <summary>
+            </summary>
+            <param name="left"></param>
+            <param name="right"></param>
+            <returns></returns>
+        </member>
+        <member name="M:FaceCheck.Server.Model.PointF.op_Inequality(FaceCheck.Server.Model.PointF,FaceCheck.Server.Model.PointF)">
+            <summary>
+            </summary>
+            <param name="left"></param>
+            <param name="right"></param>
+            <returns></returns>
+        </member>
+        <member name="T:FaceCheck.Server.Model.Rectangle">
+            <summary>
+            </summary>
+            <remarks>
+            </remarks>
+            <param name="x"></param>
+            <param name="y"></param>
+            <param name="width"></param>
+            <param name="height"></param>
+        </member>
+        <member name="M:FaceCheck.Server.Model.Rectangle.#ctor(System.Int32,System.Int32,System.Int32,System.Int32)">
+            <summary>
+            </summary>
+            <remarks>
+            </remarks>
+            <param name="x"></param>
+            <param name="y"></param>
+            <param name="width"></param>
+            <param name="height"></param>
+        </member>
+        <member name="F:FaceCheck.Server.Model.Rectangle.Empty">
+            <summary>
+            </summary>
+        </member>
+        <member name="P:FaceCheck.Server.Model.Rectangle.X">
+            <summary>
+            </summary>
+        </member>
+        <member name="P:FaceCheck.Server.Model.Rectangle.Y">
+            <summary>
+            </summary>
+        </member>
+        <member name="P:FaceCheck.Server.Model.Rectangle.Width">
+            <summary>
+            </summary>
+        </member>
+        <member name="P:FaceCheck.Server.Model.Rectangle.Height">
+            <summary>
+            </summary>
+        </member>
+        <member name="P:FaceCheck.Server.Model.Rectangle.Left">
+            <summary>
+            </summary>
+        </member>
+        <member name="P:FaceCheck.Server.Model.Rectangle.Top">
+            <summary>
+            </summary>
+        </member>
+        <member name="P:FaceCheck.Server.Model.Rectangle.Right">
+            <summary>
+            </summary>
+        </member>
+        <member name="P:FaceCheck.Server.Model.Rectangle.Bottom">
+            <summary>
+            </summary>
+        </member>
+        <member name="P:FaceCheck.Server.Model.Rectangle.IsEmpty">
+            <summary>
+            </summary>
+        </member>
+        <member name="M:FaceCheck.Server.Model.Rectangle.FromLTRB(System.Int32,System.Int32,System.Int32,System.Int32)">
+            <summary>
+            </summary>
+            <param name="left"></param>
+            <param name="top"></param>
+            <param name="right"></param>
+            <param name="bottom"></param>
+            <returns></returns>
+        </member>
+        <member name="M:FaceCheck.Server.Model.Rectangle.op_Equality(FaceCheck.Server.Model.Rectangle,FaceCheck.Server.Model.Rectangle)">
+            <summary>
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:FaceCheck.Server.Model.Rectangle.op_Inequality(FaceCheck.Server.Model.Rectangle,FaceCheck.Server.Model.Rectangle)">
+            <summary>
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:FaceCheck.Server.Model.Rectangle.GetHashCode">
+            <summary>
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:FaceCheck.Server.Model.Rectangle.ToString">
+            <summary>
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:FaceCheck.Server.Model.Rectangle.Equals(System.Object)">
+            <summary>
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:FaceCheck.Server.Model.Rectangle.Equals(FaceCheck.Server.Model.Rectangle)">
+            <summary>
+            </summary>
+            <param name="other"></param>
+            <returns></returns>
+        </member>
+        <member name="T:FaceCheck.Server.Model.SetPicInfo">
+            <summary>
+            </summary>
+        </member>
+        <member name="P:FaceCheck.Server.Model.SetPicInfo.Pic1">
+            <summary>
+            </summary>
+        </member>
+        <member name="P:FaceCheck.Server.Model.SetPicInfo.Pic2">
+            <summary>
+            </summary>
+        </member>
+        <member name="T:FaceCheck.Server.Model.SetPicInfo4Log">
+            <summary>
+            日志用
+            </summary>
+        </member>
+        <member name="P:FaceCheck.Server.Model.SetPicInfo4Log.Pic1">
+            <summary>
+            </summary>
+        </member>
+        <member name="P:FaceCheck.Server.Model.SetPicInfo4Log.Pic1Path">
+            <summary>
+            </summary>
+        </member>
+        <member name="P:FaceCheck.Server.Model.SetPicInfo4Log.Pic2">
+            <summary>
+            </summary>
+        </member>
+        <member name="P:FaceCheck.Server.Model.SetPicInfo4Log.Pic2Path">
+            <summary>
+            </summary>
+        </member>
+        <member name="T:FaceCheck.Server.Util.ExceptionHandlingMiddleware">
+            <summary>
+            </summary>
+            <remarks>
+            </remarks>
+            <param name="next"> </param>
+            <param name="loggerFactory"> </param>
+        </member>
+        <member name="M:FaceCheck.Server.Util.ExceptionHandlingMiddleware.#ctor(Microsoft.AspNetCore.Http.RequestDelegate,Microsoft.Extensions.Logging.ILoggerFactory)">
+            <summary>
+            </summary>
+            <remarks>
+            </remarks>
+            <param name="next"> </param>
+            <param name="loggerFactory"> </param>
+        </member>
+        <member name="M:FaceCheck.Server.Util.ExceptionHandlingMiddleware.Invoke(Microsoft.AspNetCore.Http.HttpContext)">
+            <summary>
+            </summary>
+            <param name="context"> </param>
+            <returns> </returns>
+        </member>
+        <member name="T:FaceCheck.Server.Util.ExceptionHandlingMiddlewareExtensions">
+            <summary>
+            </summary>
+        </member>
+        <member name="M:FaceCheck.Server.Util.ExceptionHandlingMiddlewareExtensions.UseExceptionHandlingMiddleware(Microsoft.AspNetCore.Builder.IApplicationBuilder)">
+            <summary>
+            </summary>
+            <param name="builder"> </param>
+            <returns> </returns>
+        </member>
+        <member name="T:FaceCheck.Server.Util.FaceONNXUtil">
+            <summary>
+            </summary>
+        </member>
+        <member name="P:FaceCheck.Server.Util.FaceONNXUtil.Engines">
+            <summary>
+            初始化多个引擎时使用 (假设引擎支持不多线程并发使用)
+            </summary>
+        </member>
+        <member name="P:FaceCheck.Server.Util.FaceONNXUtil.SingleEngine">
+            <summary>
+            仅初始化一个引擎时使用 (假设引擎支持多线程并发使用)
+            </summary>
+        </member>
+        <member name="M:FaceCheck.Server.Util.FaceONNXUtil.#ctor(Microsoft.Extensions.Logging.ILogger{FaceCheck.Server.Util.FaceONNXUtil},Microsoft.Extensions.Configuration.IConfiguration)">
+            <summary>
+            </summary>
+        </member>
+        <member name="M:FaceCheck.Server.Util.FaceONNXUtil.Activation">
+            <summary>
+            激活
+            </summary>
+        </member>
+        <member name="M:FaceCheck.Server.Util.FaceONNXUtil.GetFreeEngine">
+            <summary>
+            获取空闲引擎
+            </summary>
+        </member>
+        <member name="M:FaceCheck.Server.Util.FaceONNXUtil.ReturnEngine(FaceCheck.Server.Util.EngineGroup)">
+            <summary>
+            </summary>
+        </member>
+        <member name="M:FaceCheck.Server.Util.FaceONNXUtil.UninitEngine(FaceCheck.Server.Util.EngineGroup)">
+            <summary>
+            销毁引擎
+            </summary>
+            <param name="pEngine"> </param>
+        </member>
+        <member name="M:FaceCheck.Server.Util.FaceONNXUtil.GetFaceInfo(FaceCheck.Server.Util.EngineGroup,System.Byte[],System.Boolean,System.Boolean)">
+            <summary>
+            获取特征值
+            </summary>
+        </member>
+        <member name="M:FaceCheck.Server.Util.FaceONNXUtil.FaceFeatureCompare(System.Single[],System.Single[])">
+            <summary>
+            </summary>
+            <param name="pFeature1"> </param>
+            <param name="pFeature2"> </param>
+            <returns> 相似度 0.0~1.0 </returns>
+        </member>
+        <member name="M:FaceCheck.Server.Util.FaceONNXUtil.Feature2Vectors(System.Byte[])">
+            <summary>
+            </summary>
+        </member>
+        <member name="M:FaceCheck.Server.Util.FaceONNXUtil.Vectors2Feature(System.Single[])">
+            <summary>
+            </summary>
+        </member>
+        <member name="M:FaceCheck.Server.Util.FaceONNXUtil.Dispose(System.Boolean)">
+            <summary>
+            </summary>
+            <param name="disposing"> </param>
+        </member>
+        <member name="M:FaceCheck.Server.Util.FaceONNXUtil.Finalize">
+            <summary>
+            </summary>
+        </member>
+        <member name="M:FaceCheck.Server.Util.FaceONNXUtil.Dispose">
+            <summary>
+            </summary>
+        </member>
+        <member name="T:FaceCheck.Server.Util.PhotoCheck">
+            <summary>
+            实际处理照片
+            </summary>
+        </member>
+        <member name="M:FaceCheck.Server.Util.PhotoCheck.#ctor(Microsoft.Extensions.Logging.ILogger{FaceCheck.Server.Util.PhotoCheck},Microsoft.Extensions.Configuration.IConfiguration,FaceCheck.Server.Util.FaceONNXUtil)">
+            <summary>
+            </summary>
+        </member>
+        <member name="M:FaceCheck.Server.Util.PhotoCheck.CheckFace(System.Byte[])">
+            <summary>
+            </summary>
+        </member>
+        <member name="M:FaceCheck.Server.Util.PhotoCheck.CheckFace2(System.Byte[])">
+            <summary>
+            </summary>
+        </member>
+        <member name="M:FaceCheck.Server.Util.PhotoCheck.PicCompare(System.Byte[],System.Byte[])">
+            <summary>
+            </summary>
+        </member>
+        <member name="M:FaceCheck.Server.Util.PhotoCheck.ReadyUrlBuffer(FaceCheck.Server.Model.SetPicInfo)">
+            <summary>
+            </summary>
+        </member>
+        <member name="M:FaceCheck.Server.Util.PhotoCheck.GetFaceInfo(System.Byte[])">
+            <summary>
+            </summary>
+        </member>
+        <member name="M:FaceCheck.Server.Util.PhotoCheck.GetOutSize(System.Int32,System.Int32,System.Int32,System.Int32,System.Int32@,System.Int32@,System.Boolean)">
+            <summary>
+            获取外扩大小
+            </summary>
+        </member>
+        <member name="M:FaceCheck.Server.Util.PhotoCheck.IsNeedRotate(System.Single)">
+            <summary>
+            </summary>
+        </member>
+        <member name="M:FaceCheck.Server.Util.PhotoCheck.GetMaxFaceImage(SixLabors.ImageSharp.Image{SixLabors.ImageSharp.PixelFormats.Rgb24}@,FaceCheck.Server.Model.FaceInfo,System.Boolean)">
+            <summary>
+            </summary>
+            <param name="image"></param>
+            <param name="maxFaceInfo"></param>
+            <param name="only4Id">只是用于提取证件照(证件照不校验大小、活体、质量等人脸参数)</param>
+        </member>
+        <member name="M:FaceCheck.Server.Util.PhotoCheck.ScaleImage(SixLabors.ImageSharp.Image{SixLabors.ImageSharp.PixelFormats.Rgb24},System.Int32,System.Int32)">
+            <summary>
+            按指定宽高缩放图片
+            </summary>
+            <param name="image">原图片</param>
+            <param name="dstWidth">目标图片宽</param>
+            <param name="dstHeight">目标图片高</param>
+            <returns></returns>
+        </member>
+        <member name="M:FaceCheck.Server.Util.PhotoCheck.SetBackgroundColor(SixLabors.ImageSharp.Image{SixLabors.ImageSharp.PixelFormats.Rgb24}@)">
+            <summary>
+            按长宽1:1填充背景色
+            </summary>
+            <param name="image"> </param>
+        </member>
+        <member name="M:FaceCheck.Server.Util.PhotoCheck.GetJHeadRect(SixLabors.ImageSharp.Image{SixLabors.ImageSharp.PixelFormats.Rgb24},System.Int32,System.Int32,System.Int32,System.Int32,System.Int32,System.Int32)">
+            <summary>
+            矫正剪裁图片范围
+            </summary>
+            <param name="image"> 原图片 </param>
+            <param name="rectLeft"></param>
+            <param name="rectRight"></param>
+            <param name="rectTop"></param>
+            <param name="rectBottom"></param>
+            <param name="headOutWidth"></param>
+            <param name="headOutHeight"></param>
+            <returns> 剪裁后的图片 </returns>
+        </member>
+        <member name="T:FaceCheck.Program">
+            <summary>
+            </summary>
+        </member>
+        <member name="P:FaceCheck.Program.Logger">
+            <summary>
+            </summary>
+        </member>
+        <member name="M:FaceCheck.Program.Main(System.String[])">
+            <summary>
+            </summary>
+        </member>
+    </members>
+</doc>

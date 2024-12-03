@@ -1,0 +1,55 @@
+﻿<Project Sdk="Microsoft.NET.Sdk.Web">
+
+	<PropertyGroup>
+		<TargetFramework>net8.0</TargetFramework>
+		<Nullable>disable</Nullable>
+		<ImplicitUsings>disable</ImplicitUsings>
+		<InvariantGlobalization>true</InvariantGlobalization>
+		<AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+
+		<ApplicationIcon>logo.ico</ApplicationIcon>
+		<AssemblyVersion>$(Version)</AssemblyVersion>
+		<FileVersion>$(Revision)</FileVersion>
+		<Version>2024.12.02.1</Version>
+		<Platforms>AnyCPU</Platforms>
+		<NeutralLanguage>zh-Hans</NeutralLanguage>
+		<Authors>yangjieshao</Authors>
+		<Copyright>Copyright © $(Authors)</Copyright>
+		<NoWarn>1701;1702;CA2254;CA1041;CS0649;NU1803</NoWarn>
+		<DocumentationFile>$(MSBuildProjectName).xml</DocumentationFile>
+	</PropertyGroup>
+
+	<ItemGroup>
+		<RuntimeHostConfigurationOption Include="System.Runtime.Loader.UseRidGraph" Value="true" />
+	</ItemGroup>
+	
+	<ItemGroup>
+		<PackageReference Include="FaceONNX" Version="4.0.3.1" />
+		<PackageReference Include="FaceONNX.Addons" Version="4.0.3.1" />
+		<PackageReference Include="SixLabors.ImageSharp" Version="3.1.6" />
+		<PackageReference Include="Microsoft.ML.OnnxRuntime.Managed" Version="1.20.1" />
+
+		<PackageReference Condition="'$(Configuration)' == 'Debug'" Include="Microsoft.Extensions.Logging.Debug" Version="9.0.0" />
+		<PackageReference Include="Swashbuckle.AspNetCore" Version="7.1.0" />
+		<PackageReference Include="Microsoft.Extensions.Logging.Console" Version="9.0.0" />
+		<PackageReference Include="Microsoft.Extensions.Configuration" Version="9.0.0" />
+		<PackageReference Include="Microsoft.Extensions.Configuration.Binder" Version="9.0.0" />
+		<PackageReference Include="Microsoft.Extensions.Configuration.Json" Version="9.0.0" />
+		<PackageReference Include="Serilog.AspNetCore" Version="8.0.3" />
+		<PackageReference Include="System.Net.Http" Version="4.3.4" />
+		<PackageReference Include="System.Private.Uri" Version="4.3.2" />
+		<PackageReference Include="System.Text.Json" Version="9.0.0" />
+		<PackageReference Include="Vanara.PInvoke.User32" Version="4.0.4" />
+		<PackageReference Include="System.Text.Encoding.CodePages" Version="9.0.0" />
+	</ItemGroup>
+	
+	<ItemGroup>
+	  <None Update="onnxruntime.dll">
+	    <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+	  </None>
+	  <None Update="onnxruntime_providers_shared.dll">
+	    <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+	  </None>
+	</ItemGroup>
+
+</Project>
