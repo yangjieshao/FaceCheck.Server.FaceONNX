@@ -4,11 +4,11 @@
 已在信创用 linux-arm64 （银河麒麟）上运行成功
 
 # 注意！！
-使用了 Microsoft.ML.OnnxRuntime 使用默认会开启遥测将一些遥测数据传回微软
+使用了 `Microsoft.ML.OnnxRuntime` 使用默认会开启遥测将一些遥测数据传回微软
 需要在配置文件配置为不上传 （配置文件默认已设置为不上传）
 
 发布的时候需要手动从nuget缓存目录复制运行库到发布目录
-C:\Users\yangjieshao\.nuget\packages\microsoft.ml.onnxruntime\1.20.1
+`C:\Users\yangjieshao\.nuget\packages\microsoft.ml.onnxruntime\1.20.1`
 
 # Linux 启动方式
 
