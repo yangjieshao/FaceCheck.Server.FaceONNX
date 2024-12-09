@@ -27,23 +27,23 @@ namespace FaceCheck.Server.Util
         /// <returns> </returns>
         public async Task Invoke(HttpContext context)
         {
-            string connStr = $"Remote:{context.Connection.RemoteIpAddress}:{context.Connection.RemotePort} Local:{context.Connection.LocalIpAddress}:{context.Connection.LocalPort}";
-            if ("GET".Equals(context.Request.Method, StringComparison.OrdinalIgnoreCase))
-            {
-                if (!context.Request.QueryString.HasValue
-                    || string.IsNullOrWhiteSpace(context.Request.QueryString.Value))
-                {
-                    Logger.LogInformation($"{connStr} Method:GET {context.Request.Path.Value}");
-                }
-                else
-                {
-                    Logger.LogInformation($"{connStr} Method:GET {context.Request.Path.Value}?{context.Request.QueryString}");
-                }
-            }
-            else
-            {
-                Logger.LogInformation($"{connStr} Method:{context.Request.Method}  {context.Request.Path.Value}");
-            }
+            //string connStr = $"Remote:{context.Connection.RemoteIpAddress}:{context.Connection.RemotePort} Local:{context.Connection.LocalIpAddress}:{context.Connection.LocalPort}";
+            //if ("GET".Equals(context.Request.Method, StringComparison.OrdinalIgnoreCase))
+            //{
+            //    if (!context.Request.QueryString.HasValue
+            //        || string.IsNullOrWhiteSpace(context.Request.QueryString.Value))
+            //    {
+            //        Logger.LogInformation($"{connStr} Method:GET {context.Request.Path.Value}");
+            //    }
+            //    else
+            //    {
+            //        Logger.LogInformation($"{connStr} Method:GET {context.Request.Path.Value}?{context.Request.QueryString}");
+            //    }
+            //}
+            //else
+            //{
+            //    Logger.LogInformation($"{connStr} Method:{context.Request.Method}  {context.Request.Path.Value}");
+            //}
             try
             {
                 await _next(context);

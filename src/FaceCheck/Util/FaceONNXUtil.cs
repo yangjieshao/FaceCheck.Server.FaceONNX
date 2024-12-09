@@ -109,7 +109,7 @@ namespace FaceCheck.Server.Util
             if (CheckPicConfig.EngineNum <= 1)
             {
                 SingleEngine = new EngineGroup(CheckPicConfig.NeedAge, CheckPicConfig.NeedGender, CheckPicConfig.OpenEye > 0.0f);
-                Logger.LogInformation("初始化引擎组成功");
+                Logger.LogInformation("初始化单例引擎组成功");
             }
             else
             {
@@ -119,8 +119,8 @@ namespace FaceCheck.Server.Util
                     Logger.LogInformation("初始化第{num}组引擎组成功", i + 1);
                     Engines.Add(pEngine);
                 }
+                Logger.LogInformation("共初始化了{num}组引擎", Engines.Count);
             }
-            Logger.LogInformation("共初始化了{num}组引擎", Engines.Count);
             return true;
         }
 
@@ -182,10 +182,8 @@ namespace FaceCheck.Server.Util
         /// <summary>
         /// 获取特征值
         /// </summary>
-        internal Model.FaceInfo GetFaceInfo(EngineGroup pEngine, byte[] imageBuffer, bool needFaceInfo = true, bool needFeatures = true)
+        internal Model.FaceInfo GetFaceInfo(EngineGroup pEngine, Image<Rgb24> theImage, bool needFaceInfo = true, bool needFeatures = true)
         {
-            using var theImage = Image.Load<Rgb24>(imageBuffer);
-
             var (face, gender, age, isLeftEyeClosed, isRightEyeClosed, embedding) = GetEmbedding(theImage, pEngine, needFaceInfo, needFeatures);
 
             if (face == null)
@@ -222,6 +220,19 @@ namespace FaceCheck.Server.Util
         }
 
         /// <summary>
+        /// 获取特征值
+        /// </summary>
+        internal Model.FaceInfo GetFaceInfo(EngineGroup pEngine, byte[] imageBuffer, bool needFaceInfo = true, bool needFeatures = true)
+        {
+            var image = Image.Load<Rgb24>(imageBuffer);
+            PhotoCheck.ClearImageOrient(ref image);
+
+            var rr = GetFaceInfo(pEngine, image, needFaceInfo, needFeatures);
+            image.Dispose();
+            return rr;
+        }
+
+        /// <summary>
         /// </summary>
         /// <param name="pFeature1"> </param>
         /// <param name="pFeature2"> </param>
@@ -238,65 +249,69 @@ namespace FaceCheck.Server.Util
             var array = GetImageFloatArray(image);
             var rectangles = pEngine.Detector.Forward(array);
 
+            if (rectangles.Length == 0)
+            {
+                return (default, -1, -1.0f, default, default, new float[512]);
+            }
             var rectangle = rectangles.FirstOrDefault().Box;
 
-            if (!rectangle.IsEmpty)
+            if (rectangle.IsEmpty)
             {
-                // landmarks
-                var points = pEngine.LandmarksExtractor.Forward(array, rectangle);
-                var angle = points.RotationAngle;
-
-                // alignment
-                var aligned = FaceProcessingExtensions.Align(array, rectangle, angle);
-
-                int gender = -1;
-                float age = -1.0f;
-                bool? isLeftEyeClosed = default;
-                bool? isRightEyeClosed = default;
-                if (needFaceInfo)
-                {
-                    if (pEngine.GenderClassifier != null)
-                    {
-                        var output = pEngine.GenderClassifier.Forward(aligned);
-                        _ = Matrice.Max(output, out gender);
-                    }
-                    if (pEngine.AgeEstimator != null)
-                    {
-                        age = pEngine.AgeEstimator.Forward(aligned).FirstOrDefault();
-                    }
-                    if (pEngine.EyeBlinkClassifier != null)
-                    {
-                        var left_eye_rect = Face68Landmarks.GetLeftEyeRectangle(points);
-                        var right_eye_rect = Face68Landmarks.GetRightEyeRectangle(points);
-
-                        using var left_eye = image.Clone(ctx => ctx.Crop(new Rectangle(left_eye_rect.X, left_eye_rect.Y, left_eye_rect.Width, left_eye_rect.Height)));
-                        using var right_eye = image.Clone(ctx => ctx.Crop(new Rectangle(right_eye_rect.X, right_eye_rect.Y, right_eye_rect.Width, right_eye_rect.Height)));
-
-                        var left_eye_value = pEngine.EyeBlinkClassifier.Forward(GetImageFloatArray(left_eye));
-                        var right_eye_value = pEngine.EyeBlinkClassifier.Forward(GetImageFloatArray(right_eye));
-
-                        var left_eye11 = Math.Round(left_eye_value[0], 1);
-                        var right_eye111 = Math.Round(right_eye_value[0], 1);
-
-                        isLeftEyeClosed = left_eye11 < CheckPicConfig.OpenEye;
-                        isRightEyeClosed = right_eye111 < CheckPicConfig.OpenEye;
-                    }
-                }
-
-                float[] embedding;
-                if (needFeatures)
-                {
-                    embedding = pEngine.Embedder.Forward(aligned);
-                }
-                else
-                {
-                    embedding = new float[512];
-                }
-
-                return (rectangles.FirstOrDefault(), gender, age, isLeftEyeClosed, isRightEyeClosed, embedding);
+                return (default, -1, -1.0f, default, default, new float[512]);
             }
 
-            return (default, -1, -1.0f, default, default, new float[512]);
+            // landmarks
+            var points = pEngine.LandmarksExtractor.Forward(array, rectangle);
+            var angle = points.RotationAngle;
+
+            // alignment
+            var aligned = FaceProcessingExtensions.Align(array, rectangle, angle);
+
+            int gender = -1;
+            float age = -1.0f;
+            bool? isLeftEyeClosed = default;
+            bool? isRightEyeClosed = default;
+            if (needFaceInfo)
+            {
+                if (pEngine.GenderClassifier != null)
+                {
+                    var output = pEngine.GenderClassifier.Forward(aligned);
+                    _ = Matrice.Max(output, out gender);
+                }
+                if (pEngine.AgeEstimator != null)
+                {
+                    age = pEngine.AgeEstimator.Forward(aligned).FirstOrDefault();
+                }
+                if (pEngine.EyeBlinkClassifier != null)
+                {
+                    var left_eye_rect = Face68Landmarks.GetLeftEyeRectangle(points);
+                    var right_eye_rect = Face68Landmarks.GetRightEyeRectangle(points);
+
+                    using var left_eye = image.Clone(ctx => ctx.Crop(new Rectangle(left_eye_rect.X, left_eye_rect.Y, left_eye_rect.Width, left_eye_rect.Height)));
+                    using var right_eye = image.Clone(ctx => ctx.Crop(new Rectangle(right_eye_rect.X, right_eye_rect.Y, right_eye_rect.Width, right_eye_rect.Height)));
+
+                    var left_eye_value = pEngine.EyeBlinkClassifier.Forward(GetImageFloatArray(left_eye));
+                    var right_eye_value = pEngine.EyeBlinkClassifier.Forward(GetImageFloatArray(right_eye));
+
+                    var left_eye11 = Math.Round(left_eye_value[0], 1);
+                    var right_eye111 = Math.Round(right_eye_value[0], 1);
+
+                    isLeftEyeClosed = left_eye11 < CheckPicConfig.OpenEye;
+                    isRightEyeClosed = right_eye111 < CheckPicConfig.OpenEye;
+                }
+            }
+
+            float[] embedding;
+            if (needFeatures)
+            {
+                embedding = pEngine.Embedder.Forward(aligned);
+            }
+            else
+            {
+                embedding = new float[512];
+            }
+
+            return (rectangles.FirstOrDefault(), gender, age, isLeftEyeClosed, isRightEyeClosed, embedding);
         }
 
         /// <summary>

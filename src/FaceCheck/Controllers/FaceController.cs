@@ -190,7 +190,7 @@ namespace FaceCheck.Server.Controllers
                     if (comparePicInfo.Pic2 == null
                     || comparePicInfo.Pic2.Length == 0)
                     {
-                        var result = PhotoCheck.CheckFace2(comparePicInfo.Pic1);
+                        var result = await PhotoCheck.CheckFace2(comparePicInfo.Pic1);
                         return Ok(result);
                     }
                     else

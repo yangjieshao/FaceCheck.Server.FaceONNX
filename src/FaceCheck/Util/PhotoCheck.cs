@@ -6,6 +6,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using SixLabors.ImageSharp;
 using SixLabors.ImageSharp.Formats.Jpeg;
+using SixLabors.ImageSharp.Metadata.Profiles.Exif;
 using SixLabors.ImageSharp.PixelFormats;
 using SixLabors.ImageSharp.Processing;
 using System;
@@ -42,7 +43,7 @@ namespace FaceCheck.Server.Util
         {
             if (!picBuffer.IsFacePhoto())
             {
-                throw new Exception("只支持png或jpg或bmp或gif图片");
+                throw new PhotoException("只支持png或jpg或bmp或gif图片");
             }
             var result = new HttpResult<byte[]>();
 
@@ -55,17 +56,19 @@ namespace FaceCheck.Server.Util
                 return result;
             }
 
-            var faceInfo = GetFaceInfo(picBuffer);
+            var image = Image.Load<Rgb24>(picBuffer)
+                ?? throw new PhotoException("图片解析失败");
+            ClearImageOrient(ref image);
+            var faceInfo = GetFaceInfo(image);
 
             if (faceInfo.Rectangle.Width < CutPhotoConfig.MinSize
                 || faceInfo.Rectangle.Height < CutPhotoConfig.MinSize)
             {
-                throw new Exception($"小于最小可用宽度 {faceInfo.Rectangle.Width}*{faceInfo.Rectangle.Height} PhotoMinSize:{CutPhotoConfig.MinSize}");
+                image.Dispose();
+                throw new PhotoException($"小于最小可用宽度 {faceInfo.Rectangle.Width}*{faceInfo.Rectangle.Height} PhotoMinSize:{CutPhotoConfig.MinSize}");
             }
 
-            var image = Image.Load<Rgb24>(picBuffer)
-                ?? throw new Exception("图片解析失败");
-            GetMaxFaceImage(ref image, faceInfo);
+            GetMaxFaceImage(image, faceInfo);
 
             result.Data = ImageToBytes(image);
             result.Success = true;
@@ -84,7 +87,7 @@ namespace FaceCheck.Server.Util
         {
             if (!picBuffer.IsFacePhoto())
             {
-                throw new Exception("只支持png或jpg或bmp图片");
+                throw new PhotoException("只支持png或jpg或bmp图片");
             }
 
             var result = new HttpResult<HeadLocationInfoBase>();
@@ -108,22 +111,24 @@ namespace FaceCheck.Server.Util
                 return result;
             }
 
-            var faceInfo = GetFaceInfo(picBuffer);
+            var image = Image.Load<Rgb24>(picBuffer)
+                 ?? throw new PhotoException("图片解析失败");
+            ClearImageOrient(ref image);
+
+            var faceInfo = GetFaceInfo(image);
 
             if (faceInfo.Rectangle.Width < CutPhotoConfig.MinSize
                 || faceInfo.Rectangle.Height < CutPhotoConfig.MinSize)
             {
-                throw new Exception($"小于最小可用宽度 {faceInfo.Rectangle.Width}*{faceInfo.Rectangle.Height} PhotoMinSize:{CutPhotoConfig.MinSize}");
+                image.Dispose();
+                throw new PhotoException($"小于最小可用宽度 {faceInfo.Rectangle.Width}*{faceInfo.Rectangle.Height} PhotoMinSize:{CutPhotoConfig.MinSize}");
             }
 
             byte[] snapBuffer = null;
             if (CutPhotoConfig.Need)
             {
-                var image = Image.Load<Rgb24>(picBuffer)
-                    ?? throw new Exception("图片解析失败");
-                GetMaxFaceImage(ref image, faceInfo);
+                GetMaxFaceImage(image, faceInfo);
                 snapBuffer = ImageToBytes(image);
-                image.Dispose();
             }
 
             var headLocationInfo = new HeadLocationInfoBase
@@ -143,6 +148,7 @@ namespace FaceCheck.Server.Util
                 await Helper.Util.SaveTempPic(result.Data.SnapBuffer);
             }
             Logger.LogInformation($"登记照扣脸校验完毕");
+            image.Dispose();
             return result;
         }
 
@@ -153,7 +159,7 @@ namespace FaceCheck.Server.Util
             if (!picBuffer1.IsFacePhoto()
                 || !picBuffer2.IsFacePhoto())
             {
-                throw new Exception("只支持png或jpg或bmp图片");
+                throw new PhotoException("只支持png或jpg或bmp图片");
             }
             var result = new HttpResult<double>();
             if (!SystemConfig.IsReal)
@@ -176,12 +182,8 @@ namespace FaceCheck.Server.Util
                 return result;
             }
 
-            var engine1 = FaceONNXUtil.GetFreeEngine();
-            if (engine1 == null)
-            {
-                Logger.LogInformation($"系统忙，稍后重试");
-                return new HttpResult<double> { Success = false, Message = "系统忙，稍后重试" };
-            }
+            var engine1 = FaceONNXUtil.GetFreeEngine()
+                        ?? throw new EngineException("系统忙，稍后重试");
             var engine2 = engine1;
             if (CheckPicConfig.EngineNum > 1)
             {
@@ -234,7 +236,7 @@ namespace FaceCheck.Server.Util
             FaceONNXUtil.ReturnEngine(engine1);
             if (!string.IsNullOrWhiteSpace(errMsg))
             {
-                throw new Exception(errMsg);
+                throw new PhotoException(errMsg);
             }
 
             var feature1 = FaceONNXUtil.Feature2Vectors(faceInfo1.Feature);
@@ -267,20 +269,22 @@ namespace FaceCheck.Server.Util
 
         /// <summary>
         /// </summary>
-        private Model.FaceInfo GetFaceInfo(byte[] picBuffer)
+        private Model.FaceInfo GetFaceInfo(Image<Rgb24> image)
         {
             var engine = FaceONNXUtil.GetFreeEngine()
-                        ?? throw new Exception("系统忙，稍后重试");
-            var faceInfo = FaceONNXUtil.GetFaceInfo(engine, picBuffer, needFaceInfo: true, needFeatures: false);
+                        ?? throw new EngineException("系统忙，稍后重试");
+            var faceInfo = FaceONNXUtil.GetFaceInfo(engine, image, needFaceInfo: true, needFeatures: false);
             FaceONNXUtil.ReturnEngine(engine);
             if (faceInfo == null)
             {
-                throw new Exception("照片提取人脸失败");
+                image.Dispose();
+                throw new PhotoException("照片提取人脸失败");
             }
             if (CheckPicConfig.ImageQuality > 0
                 && faceInfo.ImageQuality < CheckPicConfig.ImageQuality)
             {
-                throw new Exception("照片质量不合格");
+                image.Dispose();
+                throw new PhotoException("照片质量不合格");
             }
             return faceInfo;
         }
@@ -288,7 +292,7 @@ namespace FaceCheck.Server.Util
         /// <summary>
         /// 获取外扩大小
         /// </summary>
-        private void GetOutSize(int left, int right, int top, int bottom, ref int headOutWidth, ref int headOutHeight, bool needSwapWidthHeight = false)
+        private void GetOutSize(int left, int right, int top, int bottom, ref int headOutWidth, ref int headOutHeight, bool isSwapWidthHeight)
         {
             // 外扩宽度
             headOutWidth = (right - left) / CutPhotoConfig.OutwardScale;
@@ -308,31 +312,69 @@ namespace FaceCheck.Server.Util
                 var oldHeight = bottom - top;
                 var newWidth = oldWidth + headOutWidth * 2;
                 var newHeight = oldHeight + headOutHeight * 2;
-                if (CutPhotoConfig.ScaleWidth < CutPhotoConfig.ScaleHeight)
+                if (isSwapWidthHeight)
                 {
-                    headOutHeight = Convert.ToInt32((newWidth * CutPhotoConfig.ScaleHeight / CutPhotoConfig.ScaleWidth - oldHeight) / 2);
+                    if (CutPhotoConfig.ScaleWidth < CutPhotoConfig.ScaleHeight)
+                    {
+                        headOutWidth = Convert.ToInt32((newWidth * CutPhotoConfig.ScaleHeight / CutPhotoConfig.ScaleWidth - oldHeight) / 2);
+                    }
+                    else
+                    {
+                        headOutHeight = Convert.ToInt32((newHeight * CutPhotoConfig.ScaleWidth / CutPhotoConfig.ScaleHeight - oldWidth) / 2);
+                    }
                 }
                 else
                 {
-                    headOutWidth = Convert.ToInt32((newHeight * CutPhotoConfig.ScaleWidth / CutPhotoConfig.ScaleHeight - oldWidth) / 2);
-                }
-
-                if (needSwapWidthHeight)
-                {
-                    (headOutWidth, headOutHeight) = (headOutHeight, headOutWidth);
+                    if (CutPhotoConfig.ScaleWidth < CutPhotoConfig.ScaleHeight)
+                    {
+                        headOutHeight = Convert.ToInt32((newWidth * CutPhotoConfig.ScaleHeight / CutPhotoConfig.ScaleWidth - oldHeight) / 2);
+                    }
+                    else
+                    {
+                        headOutWidth = Convert.ToInt32((newHeight * CutPhotoConfig.ScaleWidth / CutPhotoConfig.ScaleHeight - oldWidth) / 2);
+                    }
                 }
             }
         }
 
         /// <summary>
         /// </summary>
-        public static bool IsNeedRotate(float faceOrient)
+        private static bool IsSwapWidthHeight(RotateMode rotateMode)
         {
-            return faceOrient switch
+            if (rotateMode == RotateMode.Rotate90
+                || rotateMode == RotateMode.Rotate270)
             {
-                60 or 90 or 120 or 240 or 270 or 300 => true,
-                _ => false
-            };
+                return true;
+            }
+            return false;
+        }
+        /// <summary>
+        /// </summary>
+        private static RotateMode GetRotateMode(float faceOrient)
+        {
+            var result = RotateMode.None;
+            if (faceOrient < 0)
+            {
+                faceOrient = 360 + faceOrient;
+            }
+            //if (faceOrient <= -60 && faceOrient >= -120)
+            //{
+            //    result = RotateMode.Rotate270;
+            //}
+            if (faceOrient >= 45 && faceOrient < 135)
+            {
+                result = RotateMode.Rotate90;
+            }
+            else if (faceOrient >= 135 && faceOrient < 225)
+            {
+                result = RotateMode.Rotate180;
+            }
+            else if(faceOrient >= 225 && faceOrient < 315)
+            {
+                result = RotateMode.Rotate270;
+            }
+            
+            return result;
         }
 
         /// <summary>
@@ -340,19 +382,19 @@ namespace FaceCheck.Server.Util
         /// <param name="image"></param>
         /// <param name="maxFaceInfo"></param>
         /// <param name="only4Id">只是用于提取证件照(证件照不校验大小、活体、质量等人脸参数)</param>
-        private void GetMaxFaceImage(ref Image<Rgb24> image, FaceInfo maxFaceInfo, bool only4Id = false)
+        private void GetMaxFaceImage(Image<Rgb24> image, FaceInfo maxFaceInfo, bool only4Id = false)
         {
             int outWidth = 0;
             int outHeight = 0;
+            var rotateMode = GetRotateMode(maxFaceInfo.FaceOrient);
             GetOutSize(maxFaceInfo.Rectangle.Left, maxFaceInfo.Rectangle.Right, maxFaceInfo.Rectangle.Top, maxFaceInfo.Rectangle.Bottom
-                    , ref outWidth, ref outHeight, IsNeedRotate(maxFaceInfo.FaceOrient));
+                    , ref outWidth, ref outHeight, IsSwapWidthHeight(rotateMode));
 
             var rect = GetJHeadRect(image, maxFaceInfo.Rectangle.Left, maxFaceInfo.Rectangle.Right, maxFaceInfo.Rectangle.Top, maxFaceInfo.Rectangle.Bottom
                 , outWidth, outHeight);
-            var headImg = CutImage(image, rect);
 
-            image.Dispose();
-            image = headImg;
+            CutImage(image, rect, rotateMode);
+
             SetBackgroundColor(ref image);
 
             // 照片是否过大 true 太大 要缩小 false 太小 要放大 null 不用缩放
@@ -389,12 +431,11 @@ namespace FaceCheck.Server.Util
             }
         }
 
-        private static Image<Rgb24> CutImage(Image<Rgb24> image, Model.Rectangle rect)
+        private static void CutImage(Image<Rgb24> image, Model.Rectangle rect, RotateMode rotateMode = RotateMode.None)
         {
             var cropArea = new SixLabors.ImageSharp.Rectangle(rect.X, rect.Y, rect.Width, rect.Height);
-            var rotatedBitmap = image.Clone(ctx => ctx.Crop(cropArea));
 
-            return rotatedBitmap;
+            image.Mutate(x => x.Crop(cropArea).Rotate(rotateMode));
         }
 
         /// <summary>
@@ -485,12 +526,31 @@ namespace FaceCheck.Server.Util
             return new Model.Rectangle { X = leftChange, Y = topChange, Width = rightChange - leftChange, Height = bottomChange - topChange };
         }
 
-        private static byte[] ImageToBytes(Image<Rgb24> image)
+        /// <summary>
+        /// </summary>
+        public static byte[] ImageToBytes(Image<Rgb24> image)
         {
             using var memStream = new MemoryStream();
             image.SaveAsJpeg(memStream, new JpegEncoder() { Quality = 80, SkipMetadata = true, ColorType = JpegEncodingColor.Rgb });
             var buffer = memStream.ToArray();
             return buffer;
+        }
+
+        /// <summary>
+        /// </summary>
+        public static void ClearImageOrient(ref Image<Rgb24> image)
+        {
+            IExifValue<ushort> orientation = null;
+            image.Metadata?.ExifProfile?.TryGetValue(ExifTag.Orientation, out orientation);
+            if (orientation != null)
+            {
+                var rr = orientation.GetValue();
+                if (rr + string.Empty != "1")
+                {
+                    image.Mutate(x => x.AutoOrient());
+                }
+                image.Metadata.ExifProfile.RemoveValue(ExifTag.Orientation);
+            }
         }
     }
 }

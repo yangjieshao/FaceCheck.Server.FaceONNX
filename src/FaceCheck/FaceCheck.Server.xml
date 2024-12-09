@@ -257,6 +257,23 @@
             <summary>
             </summary>
         </member>
+        <member name="T:FaceCheck.Server.Helper.PhotoException">
+            <summary>
+            图片校验失败
+            </summary>
+        </member>
+        <member name="M:FaceCheck.Server.Helper.PhotoException.#ctor(System.String)">
+            <summary>
+            </summary>
+        </member>
+        <member name="T:FaceCheck.Server.Helper.EngineException">
+            <summary>
+            </summary>
+        </member>
+        <member name="M:FaceCheck.Server.Helper.EngineException.#ctor(System.String)">
+            <summary>
+            </summary>
+        </member>
         <member name="T:FaceCheck.Server.Helper.UpperCaseNameingPolicy">
             <summary>
             最大化命名
@@ -840,6 +857,11 @@
             </summary>
             <param name="pEngine"> </param>
         </member>
+        <member name="M:FaceCheck.Server.Util.FaceONNXUtil.GetFaceInfo(FaceCheck.Server.Util.EngineGroup,SixLabors.ImageSharp.Image{SixLabors.ImageSharp.PixelFormats.Rgb24},System.Boolean,System.Boolean)">
+            <summary>
+            获取特征值
+            </summary>
+        </member>
         <member name="M:FaceCheck.Server.Util.FaceONNXUtil.GetFaceInfo(FaceCheck.Server.Util.EngineGroup,System.Byte[],System.Boolean,System.Boolean)">
             <summary>
             获取特征值
@@ -898,7 +920,7 @@
             <summary>
             </summary>
         </member>
-        <member name="M:FaceCheck.Server.Util.PhotoCheck.GetFaceInfo(System.Byte[])">
+        <member name="M:FaceCheck.Server.Util.PhotoCheck.GetFaceInfo(SixLabors.ImageSharp.Image{SixLabors.ImageSharp.PixelFormats.Rgb24})">
             <summary>
             </summary>
         </member>
@@ -907,11 +929,15 @@
             获取外扩大小
             </summary>
         </member>
-        <member name="M:FaceCheck.Server.Util.PhotoCheck.IsNeedRotate(System.Single)">
+        <member name="M:FaceCheck.Server.Util.PhotoCheck.IsSwapWidthHeight(SixLabors.ImageSharp.Processing.RotateMode)">
             <summary>
             </summary>
         </member>
-        <member name="M:FaceCheck.Server.Util.PhotoCheck.GetMaxFaceImage(SixLabors.ImageSharp.Image{SixLabors.ImageSharp.PixelFormats.Rgb24}@,FaceCheck.Server.Model.FaceInfo,System.Boolean)">
+        <member name="M:FaceCheck.Server.Util.PhotoCheck.GetRotateMode(System.Single)">
+            <summary>
+            </summary>
+        </member>
+        <member name="M:FaceCheck.Server.Util.PhotoCheck.GetMaxFaceImage(SixLabors.ImageSharp.Image{SixLabors.ImageSharp.PixelFormats.Rgb24},FaceCheck.Server.Model.FaceInfo,System.Boolean)">
             <summary>
             </summary>
             <param name="image"></param>
@@ -945,6 +971,14 @@
             <param name="headOutWidth"></param>
             <param name="headOutHeight"></param>
             <returns> 剪裁后的图片 </returns>
+        </member>
+        <member name="M:FaceCheck.Server.Util.PhotoCheck.ImageToBytes(SixLabors.ImageSharp.Image{SixLabors.ImageSharp.PixelFormats.Rgb24})">
+            <summary>
+            </summary>
+        </member>
+        <member name="M:FaceCheck.Server.Util.PhotoCheck.ClearImageOrient(SixLabors.ImageSharp.Image{SixLabors.ImageSharp.PixelFormats.Rgb24}@)">
+            <summary>
+            </summary>
         </member>
         <member name="T:FaceCheck.Program">
             <summary>
